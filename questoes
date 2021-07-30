@@ -1,0 +1,210 @@
+You have two EC2 instances running in the same VPC, but in different subnets. You are removing the secondary ENI from an EC2 instance and attaching it to another EC2 instance. You want this to be fast and with limited disruption. So you want to attach the ENI to the EC2 instance when it’s running. What is this called?
+
+hot attach
+
+
+Correct. Here are some best practices for configuring network interfaces. You can attach a network interface to an instance when it's running (hot attach), when it's stopped (warm attach), or when the instance is being launched (cold attach). You can detach secondary network interfaces when the instance is running or stopped. However, you can't detach the primary network interface. You can move a network interface from one instance to another if the instances are in the same Availability Zone and VPC but in different subnets. When launching an instance using the CLI, API, or an SDK, you can specify the primary network interface and additional network interfaces. Launching an Amazon Linux or Windows Server instance with multiple network interfaces automatically configures interfaces, private IPv4 addresses, and route tables on the operating system of the instance. A warm or hot attach of an additional network interface may require you to manually bring up the second interface, configure the private IPv4 address, and modify the route table accordingly. Instances running Amazon Linux or Windows Server automatically recognize the warm or hot attach and configure themselves. Attaching another network interface to an instance (for example, a NIC teaming configuration) cannot be used as a method to increase or double the network bandwidth to or from the dual-homed instance. If you attach two or more network interfaces from the same subnet to an instance, you may encounter networking issues such as asymmetric routing. If possible, use a secondary private IPv4 address on the primary network interface instead. For more information, see Assigning a secondary private IPv4 address. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html
+
+warm attach
+
+
+synchronous attach
+
+
+cold attach
+
+
+_____________________________________________________________
+
+You have taken over management of several instances in the company AWS environment. You want to quickly retrieve data about the instances such as instance ID, public keys, and public IP address. A URL command can be used to do this. What can you append to the URL http://169.254.169.254/latest/ to retrieve this data?
+
+user-data/
+
+
+instance-data/
+
+
+instance-demographic-data/
+
+
+meta-data/
+
+
+Instance metadata is data about your instance that you can use to configure or manage the running instance. Instance metadata is divided into categories, for example, host name, events, and security groups. Because your instance metadata is available from your running instance, you do not need to use the Amazon EC2 console or the AWS CLI. This can be helpful when you're writing scripts to run from your instance. For example, you can access the local IP address of your instance from instance metadata to manage a connection to an external application. Instance metadata is divided into categories. For a description of each instance metadata category, see Instance metadata categories. To view all categories of instance metadata from within a running instance, use the following URI. http://169.254.169.254/latest/meta-data/
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html
+
+_____________________________________________________________
+
+
+You have taken over management of several instances in the company AWS environment. You want to quickly review scripts used to bootstrap the instances at runtime. A URL command can be used to do this. What can you append to the URL http://169.254.169.254/latest/ to retrieve this data?
+
+instance-data/
+
+
+instance-demographic-data/
+
+
+user-data/
+
+
+When you launch an instance in Amazon EC2, you have the option of passing user data to the instance that can be used to perform common automated configuration tasks and even run scripts after the instance starts. You can pass two types of user data to Amazon EC2: shell scripts and cloud-init directives. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html
+
+https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-instance-metadata.html
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts When you launch an instance in Amazon EC2, you have the option of passing user data to the instance that can be used to perform common automated configuration tasks and even run scripts after the instance starts. You can pass two types of user data to Amazon EC2: shell scripts and cloud-init directives. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html
+
+https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-instance-metadata.html
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts
+
+meta-data/
+
+
+_____________________________________________________________
+
+
+You have been tasked with designing a strategy for backing up EBS volumes attached to an instance-store-backed EC2 instance. You have been asked for an executive summary on your design, and the executive summary should include an answer to the question, “What can an EBS volume do when snapshotting the volume is in progress”?
+
+The volume can only accommodate writes while a snapshot is in progress.
+
+
+The volume can be used normally while the snapshot is in progress.
+
+
+Correct. You can create a point-in-time snapshot of an EBS volume and use it as a baseline for new volumes or for data backup. If you make periodic snapshots of a volume, the snapshots are incremental; the new snapshot saves only the blocks that have changed since your last snapshot. Snapshots occur asynchronously; the point-in-time snapshot is created immediately, but the status of the snapshot is pending until the snapshot is complete (when all of the modified blocks have been transferred to Amazon S3), which can take several hours for large initial snapshots or subsequent snapshots where many blocks have changed. While it is completing, an in-progress snapshot is not affected by ongoing reads and writes to the volume. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-creating-snapshot.html
+
+The volume can not be used while a snapshot is in progress.
+
+
+The volume can only accommodate reads while a snapshot is in progress.
+
+
+_____________________________________________________________
+
+
+You have configured an Auto Scaling Group of EC2 instances fronted by an Application Load Balancer and backed by an RDS database. You want to begin monitoring the EC2 instances using CloudWatch metrics. Which metric is not readily available out of the box?
+
+CPU utilization
+
+
+NetworkIn
+
+
+DiskReadOps
+
+
+Memory utilization
+
+
+Correct. Memory utilization is not available as an out of the box metric in CloudWatch. You can, however, collect memory metrics when you configure a custom metric for CloudWatch. Types of custom metrics that you can set up include:
+
+Memory utilization
+Disk swap utilization
+Disk space utilization
+Page file utilization
+Log collection
+
+_____________________________________________________________
+
+
+You have several EC2 instances in an auto scaling group fronted by a network load balancer. The instances will need access to S3 and DynamoDB. The auto scaling group was created from a launch template. What needs to be configured in the launch template to enable newly launched instances access to S3 and DynamoDB?
+
+Access keys to be passed to newly launched EC2 instances.
+
+
+IAM policy attached to newly launched instances with permissions to S3 and DynamoDB.
+
+
+An IAM Group for EC2 with policies giving permission to S3 and DynamoDB.
+
+
+An IAM Role attached to newly launched instances with permissions to S3 and DynamoDB.
+
+
+Correct. IAM roles are designed so that your applications can securely make API requests from your instances, without requiring you to manage the security credentials that the applications use. Instead of creating and distributing your AWS credentials, you can delegate permission to make API requests using IAM roles.
+
+_____________________________________________________________
+
+
+You work for a Defense contracting company. The company develops software applications which perform intensive calculations in the area of Mechanical Engineering related to metals for ship building. The company competes for and wins contracts that typically range from 1 year to up to 5 years. These long-term contracts mean that the duration of your need for EC2 instances can be matched to the length of these contracts, and then extended if necessary. The main requirement is consistent performance for the duration of the contract. Which EC2 purchasing option provides the best value, given these long-term contracts?
+
+Spot
+
+
+On-Demand
+
+
+Reserved
+
+
+Correct: Longer-term contracts such as this are ideally suited to gain maximum value by using reserved instances.
+
+Amazon EC2 provides the following purchasing options to enable you to optimize your costs based on your needs: On-Demand Instances – Pay, by the second, for the instances that you launch. Savings Plans – Reduce your Amazon EC2 costs by making a commitment to a consistent amount of usage, in USD per hour, for a term of 1 or 3 years. Reserved Instances – Reduce your Amazon EC2 costs by making a commitment to a consistent instance configuration, including instance type and region, for a term of 1 or 3 years. Scheduled Instances – Purchase instances that are always available on the specified recurring schedule, for a one-year term. Spot Instances – Request unused EC2 instances, which can reduce your Amazon EC2 costs significantly. Dedicated Hosts – Pay for a physical host that is fully dedicated to running your instances, and bring your existing per-socket, per-core, or per-VM software licenses to reduce costs. Dedicated Instances – Pay, by the hour, for instances that run on single-tenant hardware. Capacity Reservations – Reserve capacity for your EC2 instances in a specific Availability Zone for any duration. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html
+
+Dedicated Host
+
+
+_____________________________________________________________
+
+
+You work for a Defense contracting company. The company develops software applications which perform intensive calculations in the area of Mechanical Engineering related to metals for ship building. You have a 3-year contract and decide to purchase reserved EC2 instances for a 3-year duration. You are informed that the particular program has been cancelled abruptly and negotiations have brought the contract to an amicable conclusion one year early. What can you do to stop incurring charges and save money on the EC2 instances?
+
+Sell the reserved instances on the Reserved Instance Marketplace.
+
+
+The Reserved Instance Marketplace is a platform that supports the sale of third-party and AWS customers' unused Standard Reserved Instances, which vary in term lengths and pricing options. For example, you may want to sell Reserved Instances after moving instances to a new AWS Region, changing to a new instance type, ending projects before the term expiration, when your business needs change, or if you have unneeded capacity.
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-general.html
+
+Write AWS and ask to terminate the contract.
+
+
+Convert the instances to Spot Instances and allow them to go away through attrition.
+
+
+Change the instance states from running to stopped.
+
+
+_____________________________________________________________
+
+
+You have configured an Auto Scaling Group of EC2 instances. You have begun testing the scaling of the Auto Scaling Group using a stress tool to force the CPU utilization metric being used to force scale out actions. The stress tool is also being manipulated by removing stress to force a scale in. But you notice that these actions are only taking place in five-minute intervals. What is happening?
+
+The stress tool is configured to run for five minutes.
+
+
+A load balancer is managing the load and limiting the effectiveness of stressing the servers.
+
+
+Auto Scaling Groups can only scale in intervals of five minutes or greater.
+
+
+The Auto Scaling Group is following the default cooldown procedure.
+
+
+The cooldown period helps you prevent your Auto Scaling group from launching or terminating additional instances before the effects of previous activities are visible. You can configure the length of time based on your instance startup time or other application needs. When you use simple scaling, after the Auto Scaling group scales using a simple scaling policy, it waits for a cooldown period to complete before any further scaling activities due to simple scaling policies can start. An adequate cooldown period helps to prevent the initiation of an additional scaling activity based on stale metrics. By default, all simple scaling policies use the default cooldown period associated with your Auto Scaling Group, but you can configure a different cooldown period for certain policies, as described in the following sections. Note that Amazon EC2 Auto Scaling honors cooldown periods when using simple scaling policies, but not when using other scaling policies or scheduled scaling. A default cooldown period automatically applies to any scaling activities for simple scaling policies, and you can optionally request to have it apply to your manual scaling activities. When you use the AWS Management Console to update an Auto Scaling Group, or when you use the AWS CLI or an AWS SDK to create or update an Auto Scaling Group, you can set the optional default cooldown parameter. If a value for the default cooldown period is not provided, its default value is 300 seconds. https://docs.aws.amazon.com/autoscaling/ec2/userguide/Cooldown.html
+
+_____________________________________________________________
+
+
+You have multiple EC2 instances housing applications in a VPC in a single Availability Zone. Your EC2 workloads need low-latency network performance, high network throughput, and a tightly-coupled node-to-node communication. What's the best measure you can do to ensure this throughput?
+
+Use Elastic Network Interfaces
+
+
+Increase the size of the instances
+
+
+Use Auto Scaling Groups
+
+
+Launch your instances in a cluster placement group
+
+
+A cluster placement group is a logical grouping of instances within a single Availability Zone. A cluster placement group can span peered VPCs in the same Region. Instances in the same cluster placement group enjoy a higher per-flow throughput limit for TCP/IP traffic and are placed in the same high-bisection bandwidth segment of the network. Reference: Placement groups.
+
+_____________________________________________________________
+
